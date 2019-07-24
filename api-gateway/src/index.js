@@ -1,32 +1,26 @@
 'use strict';
 
 const express = require('express');
-const proxy =  require('express-http-proxy');
-
+const proxy = require('http-proxy-middleware');
 const app = express();
 
-const proxyMiddleware = (route) => {
-    return function(req, res, next) {
-        console.log(req.originalUrl);
-        return proxy(`${route.host}:${route.port}`)(req, res, next)
-    }
-}
-
+start();
 
 function start() {
-    console.log('Start');
     return new Promise((resolve, reject) => {
         
-        const routes = require('./routes');
-        if (!routes) {
-            reject(new Error('The server must be started with routes'));
-        }
+        const { getDefaultOptions, getRoutes} = require('./service');
 
-        routes.forEach(route => {
-            console.log('Route ', route);
-            const { prefix } = route;
+        getRoutes().forEach(route => {
+            const { path, target } = route;
 
-           app.use(`/${prefix}`, proxyMiddleware(route))
+            const options = {
+                target
+            }
+            app.use(proxy(path, {
+                ...options,
+                ...getDefaultOptions()
+            }))
         });
 
         const server = app.listen(8080, () => {
@@ -35,9 +29,6 @@ function start() {
         })
     });
 }
-
-
-start();
 
 
 

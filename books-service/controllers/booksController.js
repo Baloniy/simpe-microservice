@@ -45,7 +45,7 @@ async function edit(req, res) {
 
 async function update(req, res) {
     try {
-        const data = { name: req.body.name, email: req.body.email }
+        const data = { name: req.body.name, author: req.body.author, description: req.body.description }
         await Book.updateOne({_id: req.params.id} , data);
         return res.status(200).json({
             data

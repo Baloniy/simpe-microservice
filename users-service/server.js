@@ -19,5 +19,5 @@ function start() {
     routes.init(app);
 
     const PORT = process.env.PORT || 8081;
-    app.listen(8081, () => console.log(`Users service listening on port ${PORT}`));
+    app.listen(PORT, () => console.log(`Users service listening on port ${PORT}`));
 }
